@@ -1,5 +1,4 @@
 #!/bin/bash
 
-x="$(ls)"
-readarray -td 
-if (  )
+ls=(*)
+echo "${ls[2]}"
