@@ -17,6 +17,8 @@ Additionally, this repository serves as an exercise in iterative systems enginee
 
 ## How to Run
 
+Clone repo and run in bash //not for non-dev yet
+
 ## License
 
 This project is licensed under the MIT License.
