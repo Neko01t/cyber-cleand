@@ -27,15 +27,16 @@ pic+=("./testPictureFolder/")
 doc+=("./testDocumentFolder/")
 
 for target in "${arr[@]}"; do
+
   declare -n curr=$target
   dest="${curr[-1]}"
   echo "Debug : ${curr[-1]}"
-  files=("${curr[@]:0:${#curr[@]}-1}")
-  move "${dest}" "${files[@]}"
+  if [[ ${#curr[@]}-1 -ne 0 ]]; then
+    files=("${curr[@]:0:${#curr[@]}-1}")
+    move "${dest}" "${files[@]}"
+  else
+    echo "${curr} is emppty -----"
+  fi
 done
-if [[ ${#pic[@]} -ne 0 ]]; then
-  # move "./testPictureFolder/" "${pic[@]}"
-  echo ""
-fi
 
 # debugRevert
