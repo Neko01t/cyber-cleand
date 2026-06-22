@@ -8,26 +8,33 @@ debugRevert() {
 move() {
   dest=$1
   files=("${@:2}")
-  unset 'files[-1]'
+  mkdir -p "${dest}"
   echo "Debug : ${files[@]}"
-  mv "${files[@]}" "${dest}"
-  echo " -------- "
-  echo "${dest}"
+  if [[ "${dest}" == "./testTrashFolder/" ]]; then
+    for file in "${files[@]}"; do
+      mv "${file}" "${dest}${file%.trash}"
+    done
+
+  else
+    mv "${files[@]}" "${dest}"
+    echo " -------- "
+    echo "${dest}"
+  fi
   ls "${dest}"
   echo "Debug: Reverting back "
   debugRevert "${dest}*" .
 }
 
-shopt -s nullglob
-pic=(*.png *.jpg)
+shopt -s nullglob nocaseglob
+pic=(*.png *.jpg *.jpeg *.gif)
 doc=(*.txt *.pdf)
-arr=("doc" "pic")
-shopt -u nullglob
+trash=(*.trash)
+arr=("doc" "pic" "trash")
+shopt -u nullglob nocaseglob
 pic+=("./testPictureFolder/")
 doc+=("./testDocumentFolder/")
-
+trash+=("./testTrashFolder/")
 for target in "${arr[@]}"; do
-
   declare -n curr=$target
   dest="${curr[-1]}"
   echo "Debug : ${curr[-1]}"
