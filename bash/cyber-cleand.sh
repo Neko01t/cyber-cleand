@@ -10,16 +10,25 @@ move() {
   files=("${@:2}")
   mkdir -p "${dest}"
   echo "Debug : ${files[@]}"
-  if [[ "${dest}" == "./testTrashFolder/" ]]; then
-    for file in "${files[@]}"; do
-      mv "${file}" "${dest}${file%.trash}"
-    done
+  for file in "${files[@]}"; do
+    if [[ "${dest}" == "./testTrashFolder/" ]]; then
+      target_file="${file%.trash}"
+    else
+      target_file="${file}"
+    fi
+    if [[ -e "${dest}${target_file}" ]]; then
+      current_time=$(date +%s)
+      name="${target_file%.*}"
+      ext="${target_file##*.}"
+      local new_name="${name}_${current_time}.${ext}"
+      mv "${file}" "${dest}${new_name}"
+    else
+      mv "${file}" "${dest}${target_file}"
+    fi
+  done
 
-  else
-    mv "${files[@]}" "${dest}"
-    echo " -------- "
-    echo "${dest}"
-  fi
+  echo " -------- "
+  echo "${dest}"
   ls "${dest}"
   echo "Debug: Reverting back "
   debugRevert "${dest}*" .
@@ -45,5 +54,3 @@ for target in "${arr[@]}"; do
     echo "${curr} is emppty -----"
   fi
 done
-
-# debugRevert
