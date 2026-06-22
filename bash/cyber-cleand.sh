@@ -1,8 +1,18 @@
 #!/bin/bash
-
+isDebugModeOff=$1
 debugRevert() {
   echo "$1"
-  mv $1 .
+  echo "${2}"
+
+  for file in "${1}"*; do
+    [[ -e "${file}" ]] || continue
+    if [[ "${1}" == "./testTrashFolder/" ]]; then
+      basename="${file##*/}"
+      mv "${file}" "${2}/${basename}.trash"
+    else
+      mv "${file}" "${2}/"
+    fi
+  done
 }
 
 move() {
@@ -30,8 +40,10 @@ move() {
   echo " -------- "
   echo "${dest}"
   ls "${dest}"
-  echo "Debug: Reverting back "
-  debugRevert "${dest}*" .
+  if [[ -z "${isDebugModeOff}" ]]; then
+    echo "Debug: Reverting back "
+    debugRevert "${dest}" .
+  fi
 }
 
 shopt -s nullglob nocaseglob

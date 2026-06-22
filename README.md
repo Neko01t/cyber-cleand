@@ -17,7 +17,19 @@ Additionally, this repository serves as an exercise in iterative systems enginee
 
 ## How to Run
 
-Clone repo and run in bash //not for non-dev yet
+```bash
+git clone https://github.com/Neko01t/cyber-cleand
+cd cyber-cleand/bash
+chmod +x ./cyber-cleand
+./cyber-cleand
+```
+
+For now **Test Mode** is default
+If you want changes to be permanent and not revert by debug ,use
+
+```bash
+./cyber-cleand prod
+```
 
 ## License
 
