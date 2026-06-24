@@ -1,5 +1,9 @@
 #!/bin/bash
-isDebugModeOff=$1
+
+source ./config/rules.conf
+
+isDebugModeOff=$2
+echo $2
 debugRevert() {
   echo "$1"
   echo "${2}"
@@ -47,22 +51,12 @@ move() {
 }
 
 shopt -s nullglob nocaseglob
-pic=(*.png *.jpg *.jpeg *.gif)
-doc=(*.txt *.pdf)
-trash=(*.trash)
-arr=("doc" "pic" "trash")
-shopt -u nullglob nocaseglob
-pic+=("./testPictureFolder/")
-doc+=("./testDocumentFolder/")
-trash+=("./testTrashFolder/")
-for target in "${arr[@]}"; do
-  declare -n curr=$target
-  dest="${curr[-1]}"
-  echo "Debug : ${curr[-1]}"
-  if [[ ${#curr[@]}-1 -ne 0 ]]; then
-    files=("${curr[@]:0:${#curr[@]}-1}")
-    move "${dest}" "${files[@]}"
-  else
-    echo "${curr} is emppty -----"
+for dest in "${!FILE_MAP[@]}"; do
+  pattern="${FILE_MAP[$dest]}"
+  file=($pattern)
+  if [[ "${#file[@]}" -gt 0 ]]; then
+    move ${dest} ${file[@]}
   fi
 done
+
+shopt -u nullglob nocaseglob
