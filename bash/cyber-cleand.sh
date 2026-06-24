@@ -1,7 +1,15 @@
 #!/bin/bash
 
-source ./config/rules.conf
+source ./config/rules.conf || {
+  echo "Error rules.conf not found"
+  exit 1
+}
 
+search=$1
+if [[ -z $search ]]; then
+  search="."
+fi
+echo "$search"
 isDebugModeOff=$2
 echo $2
 debugRevert() {
@@ -20,8 +28,8 @@ debugRevert() {
 }
 
 move() {
-  dest=$1
-  files=("${@:2}")
+  local dest="$1"
+  local files=("${@:2}")
   mkdir -p "${dest}"
   echo "Debug : ${files[@]}"
   for file in "${files[@]}"; do
@@ -31,9 +39,9 @@ move() {
       target_file="${file}"
     fi
     if [[ -e "${dest}${target_file}" ]]; then
-      current_time=$(date +%s)
-      name="${target_file%.*}"
-      ext="${target_file##*.}"
+      local current_time="$(date +%s)"
+      local name="${target_file%.*}"
+      local ext="${target_file##*.}"
       local new_name="${name}_${current_time}.${ext}"
       mv "${file}" "${dest}${new_name}"
     else
@@ -55,8 +63,7 @@ for dest in "${!FILE_MAP[@]}"; do
   pattern="${FILE_MAP[$dest]}"
   file=($pattern)
   if [[ "${#file[@]}" -gt 0 ]]; then
-    move ${dest} ${file[@]}
+    move "${dest}" "${file[@]}"
   fi
 done
-
 shopt -u nullglob nocaseglob
