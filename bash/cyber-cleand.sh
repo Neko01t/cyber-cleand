@@ -29,7 +29,8 @@ debugRevert() {
 
 move() {
   local dest="$1"
-  local files=("${@:2}")
+  shift
+  local files=("$@")
   mkdir -p "${dest}"
   echo "Debug : ${files[@]}"
   for file in "${files[@]}"; do
@@ -62,8 +63,14 @@ shopt -s nullglob nocaseglob
 for dest in "${!FILE_MAP[@]}"; do
   pattern="${FILE_MAP[$dest]}"
   file=($pattern)
-  if [[ "${#file[@]}" -gt 0 ]]; then
-    move "${dest}" "${file[@]}"
+  files_to_move=()
+  for ext in $pattern; do
+    for matched_file in "${search}"/$ext; do
+      files_to_move+=("$matched_file")
+    done
+  done
+  if [[ "${#files_to_move[@]}" -gt 0 ]]; then
+    move "${dest}" "${files_to_move[@]}"
   fi
 done
 shopt -u nullglob nocaseglob
