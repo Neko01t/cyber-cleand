@@ -19,9 +19,11 @@ Additionally, this repository serves as an exercise in iterative systems enginee
 
 ```bash
 git clone https://github.com/Neko01t/cyber-cleand
-cd cyber-cleand/bash
-chmod +x ./cyber-cleand
-./cyber-cleand
+cd cyber-cleand && mkdir rust
+cd bash
+pacman -S inotify-tools
+chmod +x ./cyber-cleand scanner.sh
+./scanner.sh
 ```
 
 For now **Test Mode** is default
