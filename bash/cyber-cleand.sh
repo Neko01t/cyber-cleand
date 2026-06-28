@@ -34,10 +34,11 @@ move() {
   mkdir -p "${dest}"
   echo "Debug : ${files[@]}"
   for file in "${files[@]}"; do
+    local filename="${file##*/}"
     if [[ "${dest}" == "./testTrashFolder/" ]]; then
-      target_file="${file%.trash}"
+      target_file="${filename%.trash}"
     else
-      target_file="${file}"
+      target_file="${filename}"
     fi
     if [[ -e "${dest}${target_file}" ]]; then
       local current_time="$(date +%s)"
@@ -60,17 +61,23 @@ move() {
 }
 
 shopt -s nullglob nocaseglob
+
 for dest in "${!FILE_MAP[@]}"; do
   pattern="${FILE_MAP[$dest]}"
-  file=($pattern)
+  set -f
+  read -ra exts <<<"$pattern"
+  set +f
+
   files_to_move=()
-  for ext in $pattern; do
+  for ext in "${exts[@]}"; do
     for matched_file in "${search}"/$ext; do
       files_to_move+=("$matched_file")
     done
   done
+
   if [[ "${#files_to_move[@]}" -gt 0 ]]; then
     move "${dest}" "${files_to_move[@]}"
   fi
 done
+
 shopt -u nullglob nocaseglob
