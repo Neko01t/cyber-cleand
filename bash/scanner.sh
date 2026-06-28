@@ -5,6 +5,7 @@ source ./config/rules.conf || {
   exit 1
 }
 
+# check for motions in folder that was set in config
 inotifywait -m -e close_write,moved_to --format '%w' \
   --exclude '.*\.tmp$|cyber-cleand\.sh' "${WATCH_DIRS[@]}" | while read -r NEW_FILE; do
 

@@ -1,10 +1,12 @@
 #!/bin/bash
 
+# gets the config file stuff
 source ./config/rules.conf || {
   echo "Error rules.conf not found"
   exit 1
 }
 
+# set the search var
 search=$1
 if [[ -z $search ]]; then
   search="."
@@ -12,10 +14,11 @@ fi
 echo "$search"
 isDebugModeOff=$2
 echo $2
+
+# Devs only function
 debugRevert() {
   echo "$1"
   echo "${2}"
-
   for file in "${1}"*; do
     [[ -e "${file}" ]] || continue
     if [[ "${1}" == "./testTrashFolder/" ]]; then
@@ -27,20 +30,28 @@ debugRevert() {
   done
 }
 
+# Function to move
+# safely
+
 move() {
   local dest="$1"
-  shift
+  shift # shifts the input by 1 so $1 pops and $2 becomes one
   local files=("$@")
   mkdir -p "${dest}"
   echo "Debug : ${files[@]}"
   for file in "${files[@]}"; do
     local filename="${file##*/}"
-    if [[ "${dest}" == "./testTrashFolder/" ]]; then
+    if [[ "${dest}" == "./testTrashFolder/" ]]; then # BUG : should't be hardcoded will do it tomorrow
       target_file="${filename%.trash}"
     else
       target_file="${filename}"
     fi
-    if [[ -e "${dest}${target_file}" ]]; then
+
+    # I wil have to do the HASH file check
+    # so when the file have same content then it skips it
+
+    if [[ -e "${dest}${target_file}" ]]; then # if same folder exist then rename it
+
       local current_time="$(date +%s)"
       local name="${target_file%.*}"
       local ext="${target_file##*.}"
@@ -54,6 +65,7 @@ move() {
   echo " -------- "
   echo "${dest}"
   ls "${dest}"
+  # Only for Debug and for me
   if [[ -z "${isDebugModeOff}" ]]; then
     echo "Debug: Reverting back "
     debugRevert "${dest}" .
